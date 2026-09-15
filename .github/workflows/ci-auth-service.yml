@@ -179,3 +179,4 @@ jobs:
           target: ${{ vars.DEV_AUTH_SERVICE_URL }}
           fail_action: warn
           artifact_name: zap-report-auth-service
+# CI OIDC test
