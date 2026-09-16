@@ -11,6 +11,9 @@
 #   7. Cosign sign   — keyless, GitHub OIDC → Fulcio CA → Rekor transparency log
 #
 # Outputs: image-tag (sha-<7chars>), registry (ECR registry URL)
+#
+# Requires: repo variable AWS_ACCOUNT_ID (Settings → Secrets and variables → Actions → Variables)
+# Requires: repo secret GITOPS_TOKEN (used by caller workflows, not this file directly)
 
 name: Reusable — Java Build & Security Gates
 
@@ -47,11 +50,14 @@ on:
         description: "ECR registry base URL"
         value: ${{ jobs.build-and-push.outputs.registry }}
     secrets:
-      AWS_ACCOUNT_ID:
-        required: true
       NVD_API_KEY:
         description: "NIST NVD API key — higher rate limits + faster OWASP NVD updates"
         required: false
+    permissions:
+      id-token: write
+      contents: read
+      security-events: write
+      actions: read
 
 jobs:
   build-and-push:
@@ -169,9 +175,8 @@ jobs:
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/pharma-dev-github-actions-role
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/pharma-dev-github-actions-role
           aws-region: ${{ inputs.aws-region }}
-
 
       - name: Login to Amazon ECR
         id: login-ecr
