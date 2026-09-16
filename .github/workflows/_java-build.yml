@@ -11,6 +11,9 @@
 #   7. Cosign sign   — keyless, GitHub OIDC → Fulcio CA → Rekor transparency log
 #
 # Outputs: image-tag (sha-<7chars>), registry (ECR registry URL)
+#
+# Requires: repo variable AWS_ACCOUNT_ID (Settings → Secrets and variables → Actions → Variables)
+# Requires: repo secret GITOPS_TOKEN (used by caller workflows, not this file directly)
 
 name: Reusable — Java Build & Security Gates
 
@@ -47,8 +50,6 @@ on:
         description: "ECR registry base URL"
         value: ${{ jobs.build-and-push.outputs.registry }}
     secrets:
-      AWS_ACCOUNT_ID:
-        required: true
       NVD_API_KEY:
         description: "NIST NVD API key — higher rate limits + faster OWASP NVD updates"
         required: false
@@ -165,14 +166,21 @@ jobs:
           path: ${{ inputs.service-dir }}/target/dependency-check-report.html
           retention-days: 14
 
+      # ── DEBUG: show resolved role ARN before assuming it ──────────────────────
+      - name: Debug — show resolved role ARN
+        run: echo "arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/pharma-dev-github-actions-role"
+
       # ── AWS credentials via OIDC (no long-lived keys) ─────────────────────────
       - name: Configure AWS credentials (temporary access key)
         uses: aws-actions/configure-aws-credentials@v4
         with:
+<<<<<<< HEAD
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+=======
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/pharma-dev-github-actions-role
+>>>>>>> 4992cea834c44fb36294002b0c611e2786916d79
           aws-region: ${{ inputs.aws-region }}
-
 
       - name: Login to Amazon ECR
         id: login-ecr
