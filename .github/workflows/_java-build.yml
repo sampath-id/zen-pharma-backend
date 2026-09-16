@@ -53,7 +53,8 @@ on:
       NVD_API_KEY:
         description: "NIST NVD API key — higher rate limits + faster OWASP NVD updates"
         required: false
-    permissions:
+        
+  permissions:
       id-token: write
       contents: read
       security-events: write
