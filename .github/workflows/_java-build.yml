@@ -166,6 +166,10 @@ jobs:
           path: ${{ inputs.service-dir }}/target/dependency-check-report.html
           retention-days: 14
 
+      # ── DEBUG: show resolved role ARN before assuming it ──────────────────────
+      - name: Debug — show resolved role ARN
+        run: echo "arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/pharma-dev-github-actions-role"
+
       # ── AWS credentials via OIDC (no long-lived keys) ─────────────────────────
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
