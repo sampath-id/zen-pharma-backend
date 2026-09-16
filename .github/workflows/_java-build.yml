@@ -54,11 +54,11 @@ on:
         description: "NIST NVD API key — higher rate limits + faster OWASP NVD updates"
         required: false
         
-  permissions:
-      id-token: write
-      contents: read
-      security-events: write
-      actions: read
+permissions:
+  id-token: write
+  contents: read
+  security-events: write
+  actions: read
 
 jobs:
   build-and-push:
