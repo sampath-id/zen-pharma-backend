@@ -165,6 +165,11 @@ jobs:
           path: ${{ inputs.service-dir }}/target/dependency-check-report.html
           retention-days: 14
 
+      - name: Debug AWS_ACCOUNT_ID length
+        run: echo "Length is ${#SECRET} (should be 12)"
+        env:
+          SECRET: ${{ secrets.AWS_ACCOUNT_ID }}
+
       # ── AWS credentials via OIDC (no long-lived keys) ─────────────────────────
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
